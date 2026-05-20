@@ -67,11 +67,11 @@ const darkOverlay = document.getElementById('dark-overlay');
 const sizeButtons = document.querySelectorAll('.btn-size');
 
 // ===================================================
-// 【リニューアル】懐中電灯を「絵文字（🔦）」として動的に生成
+// 絵文字懐中電灯「🔦」＆光の筋エレメントを動的に生成
 // ===================================================
 const flashlightElement = document.createElement('div');
 flashlightElement.id = 'flashlight-tool';
-flashlightElement.textContent = '🔦'; // どの端末でもハッキリ映る絵文字を採用
+flashlightElement.textContent = '🔦'; 
 
 const beamElement = document.createElement('div');
 beamElement.id = 'flashlight-beam';
@@ -182,10 +182,13 @@ function handleMove(e) {
 }
 
 function updateLightPosition(touchX, touchY) {
-    // 💡 距離を「ゼロ（超至近距離）」に詰める設計
-    // 絵文字ライトの先端（右上）のすぐ目の前がそのまま真ん丸く照らされます！
-    const distance = 45; 
+    // 💡 距離を「懐中電灯とかぶらないギリギリ」に設計
     const angleRad = -30 * (Math.PI / 180); // 斜め右上約30度の方向へ照射
+    
+    // 【大幅修正】指の位置（絵文字の中心）から、照らされる円の中心までの距離
+    // 「円の半径（currentLightSize）」に、絵文字の物理的な長さ(約60px)を加えた場所に円を配置することで、
+    // 懐中電灯の先端がちょうど円の左フチに触れ合います。
+    const distance = currentLightSize + 60; 
 
     // 1. 照らされる「丸い光の中心点」の座標を計算
     const lightX = touchX + distance * Math.cos(angleRad);
