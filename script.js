@@ -170,7 +170,7 @@ function updateLightPosition(touchX, touchY) {
     
     // 【修正】画像が円を隠さないよう、フチ（弧）のキワに合わせるためのベストな距離に調整
     // ※画像と円の隙間をさらに詰めたい場合は「75」を少し小さく（例: 70）、離したい場合は大きく（例: 80）してください
-    const distance = currentLightSize + 75; 
+    const distance = currentLightSize + 85; 
 
     // 1. 照らされる「丸い光の中心点」の座標を計算
     const lightX = touchX + distance * Math.cos(angleRad);
