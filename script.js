@@ -17,14 +17,14 @@ const HIRAGANA_CHARS = [
 const KATAKANA_CHARS = [
     'ア', 'イ', 'ウ', 'エ', 'オ',
     'カ', 'キ', 'ク', 'ケ', 'コ',
-    'サ', 'シ', 'ス', 'セ', 'ソ',
-    'タ', 'チ', 'ツ', 'テ', 'ト',
-    'ナ', 'ニ', 'ヌ', 'ネ', 'ノ',
-    'ハ', 'ひ', 'フ', 'ヘ', 'ホ',
-    'マ', 'ミ', 'ム', 'メ', 'モ',
-    'ヤ', ' ', 'ユ', ' ', 'ヨ',
-    'ラ', 'リ', 'る', 'レ', 'ロ',
-    'ワ', ' ', 'ヲ', ' ', 'ン'
+    'サ', 'シ', 'セ', 'ソ', 'タ',
+    'チ', 'ツ', 'テ', 'ト', 'ナ',
+    'ニ', 'ヌ', 'ネ', 'ノ', 'ハ',
+    'ひ', 'フ', 'ヘ', 'ホ', 'マ',
+    'ミ', 'ム', 'メ', 'モ', 'ヤ',
+    ' ', 'ユ', ' ', 'ヨ', 'ラ',
+    'り', 'る', 'れ', 'ろ', 'ワ',
+    ' ', 'ヲ', ' ', 'ン'
 ];
 
 // ===================================================
@@ -91,16 +91,20 @@ btnRandom.addEventListener('click', () => {
     selectCharacter(validChars[randomIndex]);
 });
 
+// 【大幅修正】漢字入力・未確定変換中の入力バグを解消
 kanjiInput.addEventListener('input', () => {
     let val = kanjiInput.value;
+
     if (val.length === 1) {
+        // 1文字だけ正しく入力・確定された場合
         errorMessage.classList.add('hidden');
         selectCharacter(val);
     } else if (val.length > 1) {
-        errorMessage.classList.remove('hidden');
-        kanjiInput.value = val.substring(0, 1);
-        selectCharacter(val.substring(0, 1));
+        // 変換中、または2文字以上入力されてしまった場合
+        errorMessage.classList.remove('hidden'); // 「1もじだけ いれてね」を表示
+        selectCharacter(''); // 出題ボタンを一時的にロック
     } else {
+        // 空っぽの場合
         errorMessage.classList.add('hidden');
         selectCharacter('');
     }
@@ -165,23 +169,16 @@ function handleMove(e) {
 }
 
 function updateLightPosition(touchX, touchY) {
-    // 斜め右上約30度の照射角
     const angleRad = -30 * (Math.PI / 180); 
-    
-    // 【修正】画像が円を隠さないよう、フチ（弧）のキワに合わせるためのベストな距離に調整
-    // ※画像と円の隙間をさらに詰めたい場合は「75」を少し小さく（例: 70）、離したい場合は大きく（例: 80）してください
-    const distance = currentLightSize + 85; 
+    const distance = currentLightSize + 75; 
 
-    // 1. 照らされる「丸い光の中心点」の座標を計算
     const lightX = touchX + distance * Math.cos(angleRad);
     const lightY = touchY + distance * Math.sin(angleRad);
 
-    // 2. CSS変数を書き換えて暗闇のくり抜き位置を連動
     darkOverlay.style.setProperty('--light-x', `${lightX}px`);
     darkOverlay.style.setProperty('--light-y', `${lightY}px`);
     darkOverlay.style.setProperty('--light-size', `${currentLightSize}px`);
 
-    // 3. 懐中電灯画像の位置を指・マウスの真下に固定
     flashlightElement.style.left = `${touchX}px`;
     flashlightElement.style.top = `${touchY}px`;
 }
