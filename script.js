@@ -20,7 +20,7 @@ const KATAKANA_CHARS = [
     'サ', 'シ', 'ス', 'セ', 'ソ',
     'タ', 'チ', 'ツ', 'テ', 'ト',
     'ナ', 'ニ', 'ヌ', 'ネ', 'ノ',
-    'ハ', 'ひ', 'フ', 'ヘ', 'ホ',
+    'ハ', 'ヒ', 'フ', 'ヘ', 'ホ',
     'マ', 'ミ', 'ム', 'メ', 'モ',
     'ヤ', ' ', 'ユ', ' ', 'ヨ',
     'ラ', 'リ', 'ル', 'レ', 'ロ',
@@ -33,7 +33,7 @@ const KATAKANA_CHARS = [
 let currentMode = 'hiragana';
 let selectedCharacter = '';
 
-// 【仕様変更】文字の1/4以下しか映らないように設定した、くり抜く円の初期半径（ちいさい：35px）
+// くり抜く円の初期半径（ちいさい：35px）
 let currentLightSize = 35; 
 
 // ===================================================
@@ -117,7 +117,7 @@ kanjiInput.addEventListener('input', () => {
 btnPlay.addEventListener('click', () => {
     hiddenText.textContent = selectedCharacter;
     
-    // デフォルトとして必ず「ちいさい（サイズ35）」を選択状態にする
+    // デフォルトとして必ず「ちいさい」を選択状態にする
     currentLightSize = 35;
     sizeButtons.forEach(b => {
         if(b.getAttribute('data-size') === '80') { 
@@ -182,8 +182,9 @@ function handleMove(e) {
 }
 
 function updateLightPosition(touchX, touchY) {
-    // 指の位置からどのくらい離れた「右上」を照らすか
-    const distance = 280; // 持ち手から光の円までの距離（ピクセル）
+    // 【改善仕様】懐中電灯から照らされる円までの距離を「0（超至近距離）」に変更！
+    // 懐中電灯の画像自体のレンズの位置(右上)のすぐ目の前が照らされます。
+    const distance = 95; 
     const angleRad = -28 * (Math.PI / 180); // 斜め右上約28度の方向へ照射
 
     // 1. 照らされる「丸い光の中心点」の座標を計算
@@ -191,6 +192,7 @@ function updateLightPosition(touchX, touchY) {
     const lightY = touchY + distance * Math.sin(angleRad);
 
     // 2. 懐中電灯の「物理的なレンズの先端（発光部）」の座標を計算
+    // 画像内のレンズ位置（右上部分）にぴったり合わせる補正値
     const bulbX = touchX + 115;
     const bulbY = touchY - 75;
 
@@ -302,7 +304,7 @@ function changeMode(mode) {
         tabKatakana.classList.add('active');
         boardContainer.classList.remove('hidden');
         kanjiContainer.classList.add('hidden');
-        createBoard(KATAKANA_CHARS);
+        createBoard(KATAGANA_CHARS);
     } else if (mode === 'kanji') {
         tabKanji.classList.add('active');
         boardContainer.className = 'hidden';
