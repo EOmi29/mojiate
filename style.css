@@ -34,7 +34,6 @@ body {
     text-align: center;
 }
 
-/* 飾り用の丸みのある文字 */
 h1 {
     font-size: 2.5rem;
     color: #ff6f61; /* 元気なコーラルピンク */
@@ -63,7 +62,7 @@ h2 {
     font-size: 1.1rem;
     font-weight: bold;
     border: none;
-    border-radius: 15px; /* ぷっくり丸みのある四角 */
+    border-radius: 15px;
     cursor: pointer;
     box-shadow: 0 6px 0 rgba(0,0,0,0.1);
     transition: all 0.1s ease;
@@ -83,9 +82,9 @@ h2 {
     transform: none;
 }
 
-.btn-primary { background-color: #ffaa33; color: white; } /* おひさまオレンジ */
-.btn-secondary { background-color: #4bc0c0; color: white; } /* さわやかミント */
-.btn-success { background-color: #99cc33; color: white; } /* わかばグリーン */
+.btn-primary { background-color: #ffaa33; color: white; }
+.btn-secondary { background-color: #4bc0c0; color: white; }
+.btn-success { background-color: #99cc33; color: white; }
 .btn-text { background-color: transparent; color: #8a7365; box-shadow: none; }
 
 .btn-large {
@@ -97,7 +96,6 @@ h2 {
 /* ===================================================
    出題設定画面のスタイル
    =================================================== */
-/* モード切り替えタブ */
 .tab-group {
     display: flex;
     justify-content: center;
@@ -112,7 +110,7 @@ h2 {
     border: 2px solid #e6d7cb;
     background-color: #fff;
     color: #8a7365;
-    border-radius: 30px; /* カプセル型 */
+    border-radius: 30px;
     cursor: pointer;
     transition: .2s;
 }
@@ -123,10 +121,9 @@ h2 {
     border-color: #ff6f61;
 }
 
-/* 50音ボードのグリッド（丸みのある四角形たち） */
 .grid-board {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 5つの列（あかさたな…用） */
+    grid-template-columns: repeat(5, 1fr);
     gap: 10px;
     max-width: 450px;
     margin: 0 auto 20px auto;
@@ -137,13 +134,13 @@ h2 {
 }
 
 .char-btn {
-    aspect-ratio: 1; /* 正方形にする */
+    aspect-ratio: 1;
     font-size: 1.4rem;
     font-weight: bold;
     background-color: #f7f1eb;
     color: #4a3b32;
     border: none;
-    border-radius: 12px; /* まる四角 */
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.1s;
 }
@@ -159,14 +156,13 @@ h2 {
 }
 
 .char-btn.empty {
-    visibility: hidden; /* 空白（い、えの重複箇所のスキップなど用） */
+    visibility: hidden;
 }
 
 .action-row {
     margin-bottom: 30px;
 }
 
-/* 漢字入力エリア */
 #kanji-container {
     background-color: #fff;
     max-width: 450px;
@@ -204,7 +200,6 @@ h2 {
     font-size: 0.9rem;
 }
 
-/* 下部フッター */
 .setup-footer {
     border-top: 2px dashed #e6d7cb;
     padding-top: 20px;
@@ -236,30 +231,35 @@ h2 {
    4. ゲーム本番画面（真っ暗闇と白いライト）
    =================================================== */
 #page-game {
-    background-color: #111; /* ゲーム画面全体をシックな黒に */
+    background-color: #111;
     position: relative;
-    touch-action: none;    /* スマホでスクロールしちゃうのを防ぐ */
+    touch-action: none;
 }
 
-/* メインのゲームエリア */
 #game-area {
     width: 100vw;
-    height: calc(100vh - 120px); /* 下部フッターの分を引く */
+    height: calc(100vh - 120px);
     position: relative;
     overflow: hidden;
-    cursor: none; /* マウスカーソルを消してライト一体型に見せる */
+    cursor: none; /* プレイ中はカーソルを隠す */
 }
 
-/* 隠されているでっかい文字 */
+/* 正解発表されたら、通常の矢印カーソルを戻す */
+#page-game.revealed #game-area {
+    cursor: default;
+}
+
+/* 【改善】隠されている文字を画面いっぱいに超巨大化 */
 #hidden-text {
     position: absolute;
     top: 50%;
-    left: 45%; /* コントロールパネルが右にあるので少し左寄りに中央寄せ */
+    left: 45%;
     transform: translate(-50%, -50%);
-    font-size: 45vh; /* 画面の高さに合わせて限界まででっかく */
-    font-weight: bold;
-    color: #000000; /* 文字も真っ黒！ */
+    font-size: 70vh; /* 45vhから70vhに大幅拡大！ */
+    font-weight: 900;
+    color: #000000; /* プレイ中は真っ黒 */
     user-select: none;
+    z-index: 1; /* 暗闇の下に配置 */
 }
 
 /* 暗闇を覆うレイヤー */
@@ -269,41 +269,44 @@ h2 {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #0c0c0c; /* 真っ黒な闇 */
-    pointer-events: none;      /* タッチイベントを下のレイヤーに通す */
+    background-color: #0c0c0c;
+    pointer-events: none;
+    z-index: 2; /* 文字の上に暗闇を被せる */
     
-    /* JavaScriptで動的に変更する変数（初期状態はライトなし＝真っ暗） */
     --light-x: 0px;
     --light-y: 0px;
-    --light-size: 150px;
+    --light-size: 80px;
     
-    /* CSSのマスク（グラデーション）機能を使って、ライトが当たっている部分（白）だけをくり抜いて透明にします */
     mask-image: radial-gradient(
         circle var(--light-size) at var(--light-x) var(--light-y),
         rgba(0,0,0,0) 0%, 
-        rgba(0,0,0,0) 75%, 
+        rgba(0,0,0,0) 80%, 
         rgba(0,0,0,1) 100%
     );
     -webkit-mask-image: radial-gradient(
         circle var(--light-size) at var(--light-x) var(--light-y),
         rgba(0,0,0,0) 0%, 
-        rgba(0,0,0,0) 75%, 
+        rgba(0,0,0,0) 80%, 
         rgba(0,0,0,1) 100%
     );
 }
 
-/* 「正解を見る」で全体が明るくなった時の状態 */
+/* 【改善】正解を見た時、暗闇だけが消えて文字はちゃんと残る */
 #page-game.revealed #dark-overlay {
-    background-color: #fffbf0; /* 闇が消えて温かい白背景に！ */
+    background-color: transparent; /* 完全に透明にして文字を見せる */
     mask-image: none;
     -webkit-mask-image: none;
 }
 
-#page-game.revealed #hidden-text {
-    color: #4a3b32; /* 文字も真っ黒からチョコレート色に変わって見やすくなる */
+#page-game.revealed {
+    background-color: #fbf7f0; /* ゲーム画面全体の背景をミルク色に戻す */
 }
 
-/* 右側のライトサイズ変更パネル */
+#page-game.revealed #hidden-text {
+    color: #4a3b32; /* 文字を優しいチョコ色にしてハッキリ見せる */
+}
+
+/* 右側のコントロールパネル */
 #control-panel {
     position: absolute;
     right: 20px;
@@ -327,7 +330,15 @@ h2 {
     margin-bottom: 5px;
 }
 
-/* サイズ変更ボタン（縦に並ぶ） */
+/* 正解発表されたらコントロールパネルの色味を背景に合わせる */
+#page-game.revealed #control-panel {
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0,0,0,0.1);
+}
+#page-game.revealed #control-panel h3 {
+    color: #4a3b32;
+}
+
 .btn-size {
     padding: 12px 15px;
     font-size: 1rem;
@@ -354,7 +365,20 @@ h2 {
     background-color: #fff;
     color: #111;
     border-color: #fff;
-    box-shadow: 0 0 15px rgba(255,255,255,0.6); /* 白く光る演出 */
+    box-shadow: 0 0 15px rgba(255,255,255,0.6);
+}
+
+/* 正解発表後のサイズボタンの見た目 */
+#page-game.revealed .btn-size {
+    color: #4a3b32;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 2px solid #e6d7cb;
+}
+#page-game.revealed .btn-size.active {
+    background-color: #ff6f61;
+    color: white;
+    border-color: #ff6f61;
+    box-shadow: none;
 }
 
 /* 下部フッターエリア */
@@ -368,6 +392,11 @@ h2 {
     border-top: 2px solid #2d2d2d;
     z-index: 10;
     position: relative;
+}
+
+#page-game.revealed #game-footer {
+    background-color: #f7f1eb;
+    border-top: 2px solid #e6d7cb;
 }
 
 .btn-reveal {
