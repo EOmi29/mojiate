@@ -228,10 +228,10 @@ h2 {
 }
 
 /* ===================================================
-   4. ゲーム本番画面（修正：ライトの円を完全な白背景＆黒文字に）
+   4. ゲーム本番画面（最新修正版）
    =================================================== */
 #page-game {
-    background-color: #ffffff; /* ベースの地の色を「完全な白」に変更 */
+    background-color: #ffffff; /* ベースは純白背景 */
     position: relative;
     touch-action: none;
 }
@@ -241,14 +241,14 @@ h2 {
     height: calc(100vh - 120px);
     position: relative;
     overflow: hidden;
-    cursor: none; /* マウスを隠す */
+    cursor: none; /* マウス矢印を隠す */
 }
 
 #page-game.revealed #game-area {
     cursor: default;
 }
 
-/* 隠されている文字（ベースが白なので、文字色は真っ黒にします） */
+/* 隠されている文字（常に一番下のレイヤー） */
 #hidden-text {
     position: absolute;
     top: 50%;
@@ -256,72 +256,71 @@ h2 {
     transform: translate(-50%, -50%);
     font-size: 75vh; 
     font-weight: 900;
-    color: #000000; /* 常にクッキリとした真っ黒な文字 */
+    color: #000000; /* クッキリとした真っ黒 */
     user-select: none;
-    z-index: 1; /* 一番下に配置 */
+    z-index: 1; 
 }
 
-/* 闇のオーバーレイ層（光が当たった円の中だけを完全に透明化する） */
+/* 闇のオーバーレイ層（文字の上に被せて、光の円だけくり抜く） */
 #dark-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #0c0c0c; /* 周囲を包む真っ黒な闇 */
+    background-color: #0c0c0c; /* ステージを包む真っ黒な闇 */
     pointer-events: none;
-    z-index: 2; /* 文字の上に被せる */
+    z-index: 2; /* 文字(1)の上、ライト(3)の下 */
     
     --light-x: 0px;
     --light-y: 0px;
     --light-size: 35px;
     
-    /* マスクを改良：円の内側（0%〜90%）を「完全に透明（透過）」にくり抜き、外側を黒く残します */
+    /* マスク：円の内側（0%〜85%）を完全に透明化し、フチを滑らかにします */
     mask-image: radial-gradient(
         circle var(--light-size) at var(--light-x) var(--light-y),
         rgba(0,0,0,0) 0%, 
-        rgba(0,0,0,0) 90%, 
+        rgba(0,0,0,0) 85%, 
         rgba(0,0,0,1) 100%
     );
     -webkit-mask-image: radial-gradient(
         circle var(--light-size) at var(--light-x) var(--light-y),
         rgba(0,0,0,0) 0%, 
-        rgba(0,0,0,0) 90%, 
+        rgba(0,0,0,0) 85%, 
         rgba(0,0,0,1) 100%
     );
 }
 
-/* 懐中電灯ツール（指・マウスの真下に持ち手が来る） */
+/* 懐中電灯ツール本体（【改善】闇レイヤーのさらに「上」に配置！） */
 #flashlight-tool {
     position: absolute;
     pointer-events: none;
-    z-index: 5; /* 最前面に表示 */
+    z-index: 4; /* 闇(2)よりも上に配置して100%クッキリ見せる */
     display: none;
-    width: 160px;
-    height: 120px;
-    transform: translate(-10%, -85%); 
-    
-    /* 【超重要】画像の周りにある「白い四角い余白」を黒い闇背景にブレンドして自動消去します */
-    mix-blend-mode: multiply; 
+    width: 150px;
+    height: 110px;
+    /* レンズの先端が指の近く、持ち手が左下に来るような絶妙な補正 */
+    transform: translate(-25%, -65%); 
 }
 
-/* 懐中電灯の画像 */
+/* 懐中電灯の画像（【改善】闇の上に置いたためブレンドモードは通常に戻し、画像を最高にクリアに） */
 #flashlight-img {
     width: 100%;
     height: 100%;
     object-fit: contain;
 }
 
-/* 懐中電灯の先から伸びる、リアルな黄色い放射光の筋 */
+/* 【改善】懐中電灯の先から伸びる、自然にボカされた黄色い放射光の筋 */
 #flashlight-beam {
     position: absolute;
     pointer-events: none;
-    z-index: 4; /* 暗闇レイヤーのさらに上に重ねる */
+    z-index: 3; /* 闇(2)の上、懐中電灯(4)の下 */
     display: none;
     
-    /* 【改善】暗かった光の筋を、電球の温かみのある綺麗な黄色グラデーションに変更 */
-    background: linear-gradient(to top right, rgba(255, 240, 150, 0.4), rgba(255, 255, 200, 0.15));
+    /* 綺麗な電球色のグラデーション */
+    background: linear-gradient(to top right, rgba(255, 235, 120, 0.45) 0%, rgba(255, 255, 180, 0.15) 80%, rgba(255,255,255,0) 100%);
     
+    /* ポリゴンで懐中電灯の先端から円への光の道筋を作る */
     clip-path: polygon(var(--beam-start-x1) var(--beam-start-y1), var(--beam-start-x2) var(--beam-start-y2), var(--beam-end-x2) var(--beam-end-y2), var(--beam-end-x1) var(--beam-end-y1));
     -webkit-clip-path: polygon(var(--beam-start-x1) var(--beam-start-y1), var(--beam-start-x2) var(--beam-start-y2), var(--beam-end-x2) var(--beam-end-y2), var(--beam-end-x1) var(--beam-end-y1));
     
@@ -329,6 +328,20 @@ h2 {
     height: 100%;
     top: 0;
     left: 0;
+
+    /* 【改善仕様】光の筋の底辺（くり抜かれた円にたどり着く部分）を優しくボカすマスク処理 */
+    mask-image: radial-gradient(
+        circle calc(var(--light-size) + 15px) at var(--light-x) var(--light-y),
+        rgba(0,0,0,0) 0%,      /* 円の中にはエフェクトを1%も被せない（完全にクリア！） */
+        rgba(0,0,0,0) var(--light-size),
+        rgba(0,0,0,1) calc(var(--light-size) + 25px) /* 円の少し手前でふんわりボカして繋ぐ */
+    );
+    -webkit-mask-image: radial-gradient(
+        circle calc(var(--light-size) + 15px) at var(--light-x) var(--light-y),
+        rgba(0,0,0,0) 0%, 
+        rgba(0,0,0,0) var(--light-size),
+        rgba(0,0,0,1) calc(var(--light-size) + 25px)
+    );
 }
 
 /* 正解発表された時 */
@@ -339,7 +352,7 @@ h2 {
 }
 
 #page-game.revealed {
-    background-color: #fbf7f0; /* 全体をいつものミルク色に戻す */
+    background-color: #fbf7f0; /* いつもの温かいミルク色 */
 }
 
 #page-game.revealed #hidden-text {
