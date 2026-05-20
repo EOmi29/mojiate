@@ -1,12 +1,12 @@
 /* ===================================================
-   共通の基本スタイル＆教育向けフォント設定
+   共通の基本スタイル＆丸ゴシック・教育向けデザイン
    =================================================== */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    /* iPad標準のKlee(クレー)を最優先にし、次に教科書体、丸ゴシックを指定 */
-    font-family: 'Klee', 'Klee One', 'YuMincho', 'ヒラギノ明朝 ProN', 'Hiragino Mincho ProN', 'UDデジタル教科書体', 'Hiragino Maru Gothic ProN', sans-serif;
+    /* iPadの丸ゴ、Windowsのメイリオ、Googleフォントの順で、どれかが必ず適用されるように指定 */
+    font-family: 'Hiragino Maru Gothic ProN', 'ヒラギノ丸ゴ ProN', 'Meiryo', 'メイリオ', 'Klee', 'Klee One', sans-serif;
 }
 
 body {
@@ -35,7 +35,7 @@ body {
 
 h1 {
     font-size: 2.5rem;
-    color: #ff6f61; /* 元気なコーラルピンク */
+    color: #ff6f61;
     margin-bottom: 20px;
     text-shadow: 2px 2px 0px #fff, 4px 4px 0px #ffcca7;
     font-weight: bold;
@@ -55,7 +55,7 @@ h2 {
 }
 
 /* ===================================================
-   ボタンの基本スタイル
+   ボタン・タブの基本スタイル
    =================================================== */
 .btn {
     display: inline-block;
@@ -68,7 +68,6 @@ h2 {
     box-shadow: 0 6px 0 rgba(0,0,0,0.1);
     transition: all 0.1s ease;
     text-decoration: none;
-    font-family: 'Hiragino Maru Gothic ProN', sans-serif; /* ボタン類は丸ゴシックで読みやすく */
 }
 
 .btn:active:not(:disabled) {
@@ -95,9 +94,6 @@ h2 {
     border-radius: 20px;
 }
 
-/* ===================================================
-   出題設定画面のスタイル
-   =================================================== */
 .tab-group {
     display: flex;
     justify-content: center;
@@ -115,7 +111,6 @@ h2 {
     border-radius: 30px;
     cursor: pointer;
     transition: .2s;
-    font-family: 'Hiragino Maru Gothic ProN', sans-serif;
 }
 
 .tab-btn.active {
@@ -124,6 +119,9 @@ h2 {
     border-color: #ff6f61;
 }
 
+/* ===================================================
+   出題設定画面のスタイル
+   =================================================== */
 .grid-board {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -205,10 +203,10 @@ h2 {
 }
 
 /* ===================================================
-   4. ゲーム本番画面（絵文字ライト＆教科書フォント対応）
+   3. ゲーム本番画面
    =================================================== */
 #page-game {
-    background-color: #ffffff; /* ベースはクッキリ純白背景 */
+    background-color: #ffffff; 
     position: relative;
     touch-action: none;
 }
@@ -225,27 +223,27 @@ h2 {
     cursor: default;
 }
 
-/* 隠されている文字（最下層・学校で習うフォントを極太で表示） */
+/* 隠されている大きな文字（最下層） */
 #hidden-text {
     position: absolute;
-    top: 48%; /* クレーフォントの重心に合わせてわずかに上に調整 */
+    top: 48%; 
     left: 45%;
     transform: translate(-50%, -50%);
     font-size: 70vh; 
-    font-weight: bold; /* クレーフォントの綺麗な形を維持 */
-    color: #000000;    /* 混じり気のない真っ黒 */
+    font-weight: bold;
+    color: #000000;    
     user-select: none;
     z-index: 1; 
 }
 
-/* 闇のオーバーレイ層（光の円だけを綺麗に透過） */
+/* 闇のオーバーレイ層（文字の上） */
 #dark-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #0c0c0c; /* ステージを包む真っ黒な闇 */
+    background-color: #0c0c0c; /* 真っ黒な闇 */
     pointer-events: none;
     z-index: 2; 
     
@@ -267,48 +265,22 @@ h2 {
     );
 }
 
-/* 絵文字懐中電灯ツール本体（闇の「上」に配置して100%クッキリ！） */
+/* 懐中電灯画像（闇の上に完全にクリアに配置） */
 #flashlight-tool {
-    position: absolute;
-    pointer-events: none;
-    z-index: 4; 
-    display: none;
-    font-size: 5rem; /* 絵文字を最適なサイズに拡大 */
-    line-height: 1;
-    /* 絵文字の斜め向き(左下から右上)に合わせて、中心を微調整 */
-    transform: translate(-25%, -65%); 
-}
-
-/* 懐中電灯の先から伸びる、自然にボカされた黄色い放射光の筋 */
-#flashlight-beam {
     position: absolute;
     pointer-events: none;
     z-index: 3; 
     display: none;
-    
-    background: linear-gradient(to top right, rgba(255, 235, 120, 0.5) 0%, rgba(255, 255, 180, 0.15) 80%, rgba(255,255,255,0) 100%);
-    
-    clip-path: polygon(var(--beam-start-x1) var(--beam-start-y1), var(--beam-start-x2) var(--beam-start-y2), var(--beam-end-x2) var(--beam-end-y2), var(--beam-end-x1) var(--beam-end-y1));
-    -webkit-clip-path: polygon(var(--beam-start-x1) var(--beam-start-y1), var(--beam-start-x2) var(--beam-start-y2), var(--beam-end-x2) var(--beam-end-y2), var(--beam-end-x1) var(--beam-end-y1));
-    
+    width: 120px;  /* 余白が消えたため、少し小さく扱いやすいサイズに調整 */
+    height: 120px;
+    /* トリミング後の画像の「右上（レンズ）」が指の斜め上をきれいに狙うための位置調整 */
+    transform: translate(-20%, -60%); 
+}
+
+#flashlight-img {
     width: 100%;
     height: 100%;
-    top: 0;
-    left: 0;
-
-    /* 円の中にはエフェクトを被せず、手前でふんわりボカすマスク処理 */
-    mask-image: radial-gradient(
-        circle calc(var(--light-size) + 15px) at var(--light-x) var(--light-y),
-        rgba(0,0,0,0) 0%,      
-        rgba(0,0,0,0) var(--light-size),
-        rgba(0,0,0,1) calc(var(--light-size) + 25px) 
-    );
-    -webkit-mask-image: radial-gradient(
-        circle calc(var(--light-size) + 15px) at var(--light-x) var(--light-y),
-        rgba(0,0,0,0) 0%, 
-        rgba(0,0,0,0) var(--light-size),
-        rgba(0,0,0,1) calc(var(--light-size) + 25px)
-    );
+    object-fit: contain;
 }
 
 /* 正解発表された時 */
@@ -323,7 +295,7 @@ h2 {
 }
 
 #page-game.revealed #hidden-text {
-    color: #4a3b32; /* 文字を優しいチョコ色にしてハッキリ見せる */
+    color: #4a3b32; 
 }
 
 /* 右側のコントロールパネル */
@@ -348,7 +320,6 @@ h2 {
     font-size: 0.9rem;
     text-align: center;
     margin-bottom: 5px;
-    font-family: 'Hiragino Maru Gothic ProN', sans-serif;
 }
 
 #page-game.revealed #control-panel {
@@ -372,7 +343,6 @@ h2 {
     align-items: center;
     gap: 8px;
     transition: .2s;
-    font-family: 'Hiragino Maru Gothic ProN', sans-serif;
 }
 
 .btn-size .icon {
