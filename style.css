@@ -1,13 +1,12 @@
 /* ===================================================
-   共通の基本スタイル＆温かみのある全体デザイン
+   共通の基本スタイル＆教育向けフォント設定
    =================================================== */
-@import url('https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500;700&display=swap');
-
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Kiwi Maru', 'Hiragino Maru Gothic ProN', 'Yu Gothic', sans-serif;
+    /* iPad標準のKlee(クレー)を最優先にし、次に教科書体、丸ゴシックを指定 */
+    font-family: 'Klee', 'Klee One', 'YuMincho', 'ヒラギノ明朝 ProN', 'Hiragino Mincho ProN', 'UDデジタル教科書体', 'Hiragino Maru Gothic ProN', sans-serif;
 }
 
 body {
@@ -39,12 +38,14 @@ h1 {
     color: #ff6f61; /* 元気なコーラルピンク */
     margin-bottom: 20px;
     text-shadow: 2px 2px 0px #fff, 4px 4px 0px #ffcca7;
+    font-weight: bold;
 }
 
 h2 {
     font-size: 1.8rem;
     color: #4a3b32;
     margin-bottom: 25px;
+    font-weight: bold;
 }
 
 .description {
@@ -54,7 +55,7 @@ h2 {
 }
 
 /* ===================================================
-   かわいいボタンの基本スタイル
+   ボタンの基本スタイル
    =================================================== */
 .btn {
     display: inline-block;
@@ -67,6 +68,7 @@ h2 {
     box-shadow: 0 6px 0 rgba(0,0,0,0.1);
     transition: all 0.1s ease;
     text-decoration: none;
+    font-family: 'Hiragino Maru Gothic ProN', sans-serif; /* ボタン類は丸ゴシックで読みやすく */
 }
 
 .btn:active:not(:disabled) {
@@ -113,6 +115,7 @@ h2 {
     border-radius: 30px;
     cursor: pointer;
     transition: .2s;
+    font-family: 'Hiragino Maru Gothic ProN', sans-serif;
 }
 
 .tab-btn.active {
@@ -159,10 +162,6 @@ h2 {
     visibility: hidden;
 }
 
-.action-row {
-    margin-bottom: 30px;
-}
-
 #kanji-container {
     background-color: #fff;
     max-width: 450px;
@@ -170,11 +169,6 @@ h2 {
     padding: 30px 20px;
     border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-
-#kanji-container p {
-    font-size: 1.1rem;
-    margin-bottom: 15px;
 }
 
 #kanji-input {
@@ -188,22 +182,11 @@ h2 {
     font-weight: bold;
 }
 
-#kanji-input:focus {
-    outline: none;
-    background-color: #fffdf7;
-}
-
 .error-text {
     color: #ff4d4d;
     font-weight: bold;
     margin-top: 10px;
     font-size: 0.9rem;
-}
-
-.setup-footer {
-    border-top: 2px dashed #e6d7cb;
-    padding-top: 20px;
-    margin-top: 20px;
 }
 
 .selected-display {
@@ -217,21 +200,15 @@ h2 {
     font-size: 1.6rem;
 }
 
-.navigation-buttons {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
 .hidden {
     display: none !important;
 }
 
 /* ===================================================
-   4. ゲーム本番画面（最新修正版）
+   4. ゲーム本番画面（絵文字ライト＆教科書フォント対応）
    =================================================== */
 #page-game {
-    background-color: #ffffff; /* ベースは純白背景 */
+    background-color: #ffffff; /* ベースはクッキリ純白背景 */
     position: relative;
     touch-action: none;
 }
@@ -241,27 +218,27 @@ h2 {
     height: calc(100vh - 120px);
     position: relative;
     overflow: hidden;
-    cursor: none; /* マウス矢印を隠す */
+    cursor: none; 
 }
 
 #page-game.revealed #game-area {
     cursor: default;
 }
 
-/* 隠されている文字（常に一番下のレイヤー） */
+/* 隠されている文字（最下層・学校で習うフォントを極太で表示） */
 #hidden-text {
     position: absolute;
-    top: 50%;
+    top: 48%; /* クレーフォントの重心に合わせてわずかに上に調整 */
     left: 45%;
     transform: translate(-50%, -50%);
-    font-size: 75vh; 
-    font-weight: 900;
-    color: #000000; /* クッキリとした真っ黒 */
+    font-size: 70vh; 
+    font-weight: bold; /* クレーフォントの綺麗な形を維持 */
+    color: #000000;    /* 混じり気のない真っ黒 */
     user-select: none;
     z-index: 1; 
 }
 
-/* 闇のオーバーレイ層（文字の上に被せて、光の円だけくり抜く） */
+/* 闇のオーバーレイ層（光の円だけを綺麗に透過） */
 #dark-overlay {
     position: absolute;
     top: 0;
@@ -270,13 +247,12 @@ h2 {
     height: 100%;
     background-color: #0c0c0c; /* ステージを包む真っ黒な闇 */
     pointer-events: none;
-    z-index: 2; /* 文字(1)の上、ライト(3)の下 */
+    z-index: 2; 
     
     --light-x: 0px;
     --light-y: 0px;
     --light-size: 35px;
     
-    /* マスク：円の内側（0%〜85%）を完全に透明化し、フチを滑らかにします */
     mask-image: radial-gradient(
         circle var(--light-size) at var(--light-x) var(--light-y),
         rgba(0,0,0,0) 0%, 
@@ -291,36 +267,27 @@ h2 {
     );
 }
 
-/* 懐中電灯ツール本体（【改善】闇レイヤーのさらに「上」に配置！） */
+/* 絵文字懐中電灯ツール本体（闇の「上」に配置して100%クッキリ！） */
 #flashlight-tool {
     position: absolute;
     pointer-events: none;
-    z-index: 4; /* 闇(2)よりも上に配置して100%クッキリ見せる */
+    z-index: 4; 
     display: none;
-    width: 150px;
-    height: 110px;
-    /* レンズの先端が指の近く、持ち手が左下に来るような絶妙な補正 */
+    font-size: 5rem; /* 絵文字を最適なサイズに拡大 */
+    line-height: 1;
+    /* 絵文字の斜め向き(左下から右上)に合わせて、中心を微調整 */
     transform: translate(-25%, -65%); 
 }
 
-/* 懐中電灯の画像（【改善】闇の上に置いたためブレンドモードは通常に戻し、画像を最高にクリアに） */
-#flashlight-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-/* 【改善】懐中電灯の先から伸びる、自然にボカされた黄色い放射光の筋 */
+/* 懐中電灯の先から伸びる、自然にボカされた黄色い放射光の筋 */
 #flashlight-beam {
     position: absolute;
     pointer-events: none;
-    z-index: 3; /* 闇(2)の上、懐中電灯(4)の下 */
+    z-index: 3; 
     display: none;
     
-    /* 綺麗な電球色のグラデーション */
-    background: linear-gradient(to top right, rgba(255, 235, 120, 0.45) 0%, rgba(255, 255, 180, 0.15) 80%, rgba(255,255,255,0) 100%);
+    background: linear-gradient(to top right, rgba(255, 235, 120, 0.5) 0%, rgba(255, 255, 180, 0.15) 80%, rgba(255,255,255,0) 100%);
     
-    /* ポリゴンで懐中電灯の先端から円への光の道筋を作る */
     clip-path: polygon(var(--beam-start-x1) var(--beam-start-y1), var(--beam-start-x2) var(--beam-start-y2), var(--beam-end-x2) var(--beam-end-y2), var(--beam-end-x1) var(--beam-end-y1));
     -webkit-clip-path: polygon(var(--beam-start-x1) var(--beam-start-y1), var(--beam-start-x2) var(--beam-start-y2), var(--beam-end-x2) var(--beam-end-y2), var(--beam-end-x1) var(--beam-end-y1));
     
@@ -329,12 +296,12 @@ h2 {
     top: 0;
     left: 0;
 
-    /* 【改善仕様】光の筋の底辺（くり抜かれた円にたどり着く部分）を優しくボカすマスク処理 */
+    /* 円の中にはエフェクトを被せず、手前でふんわりボカすマスク処理 */
     mask-image: radial-gradient(
         circle calc(var(--light-size) + 15px) at var(--light-x) var(--light-y),
-        rgba(0,0,0,0) 0%,      /* 円の中にはエフェクトを1%も被せない（完全にクリア！） */
+        rgba(0,0,0,0) 0%,      
         rgba(0,0,0,0) var(--light-size),
-        rgba(0,0,0,1) calc(var(--light-size) + 25px) /* 円の少し手前でふんわりボカして繋ぐ */
+        rgba(0,0,0,1) calc(var(--light-size) + 25px) 
     );
     -webkit-mask-image: radial-gradient(
         circle calc(var(--light-size) + 15px) at var(--light-x) var(--light-y),
@@ -352,7 +319,7 @@ h2 {
 }
 
 #page-game.revealed {
-    background-color: #fbf7f0; /* いつもの温かいミルク色 */
+    background-color: #fbf7f0; 
 }
 
 #page-game.revealed #hidden-text {
@@ -381,6 +348,7 @@ h2 {
     font-size: 0.9rem;
     text-align: center;
     margin-bottom: 5px;
+    font-family: 'Hiragino Maru Gothic ProN', sans-serif;
 }
 
 #page-game.revealed #control-panel {
@@ -404,6 +372,7 @@ h2 {
     align-items: center;
     gap: 8px;
     transition: .2s;
+    font-family: 'Hiragino Maru Gothic ProN', sans-serif;
 }
 
 .btn-size .icon {
