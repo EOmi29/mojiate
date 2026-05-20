@@ -17,14 +17,14 @@ const HIRAGANA_CHARS = [
 const KATAKANA_CHARS = [
     'ア', 'イ', 'ウ', 'エ', 'オ',
     'カ', 'キ', 'ク', 'ケ', 'コ',
-    'サ', 'シ', 'ス', 'セ', 'ソ',
-    'タ', 'チ', 'ツ', 'テ', 'ト',
-    'ナ', 'ニ', 'ヌ', 'ネ', 'ノ',
-    'ハ', 'ヒ', 'フ', 'ヘ', 'ホ',
-    'マ', 'ミ', 'ム', 'メ', 'モ',
-    'ヤ', ' ', 'ユ', ' ', 'ヨ',
-    'ラ', 'リ', 'ル', 'レ', 'ロ',
-    'ワ', ' ', 'ヲ', ' ', 'ン'
+    'サ', 'シ', 'セ', 'ソ', 'タ',
+    'チ', 'ツ', 'テ', 'ト', 'ナ',
+    'ニ', 'ヌ', 'ネ', 'ノ', 'ハ',
+    'ひ', 'フ', 'ヘ', 'ホ', 'マ',
+    'ミ', 'ム', 'メ', 'モ', 'ヤ',
+    ' ', 'ユ', ' ', 'ヨ', 'ラ',
+    'り', 'る', 'れ', 'ろ', 'ワ',
+    ' ', 'ヲ', ' ', 'ン'
 ];
 
 // ===================================================
@@ -67,11 +67,11 @@ const darkOverlay = document.getElementById('dark-overlay');
 const sizeButtons = document.querySelectorAll('.btn-size');
 
 // ===================================================
-// 懐中電灯（ライト）＆光の筋エレメントを動的に生成
+// 【リニューアル】懐中電灯を「絵文字（🔦）」として動的に生成
 // ===================================================
 const flashlightElement = document.createElement('div');
 flashlightElement.id = 'flashlight-tool';
-flashlightElement.innerHTML = `<img src="light.png" id="flashlight-img" alt="懐中電灯">`;
+flashlightElement.textContent = '🔦'; // どの端末でもハッキリ映る絵文字を採用
 
 const beamElement = document.createElement('div');
 beamElement.id = 'flashlight-beam';
@@ -182,30 +182,29 @@ function handleMove(e) {
 }
 
 function updateLightPosition(touchX, touchY) {
-    // 【改善仕様】懐中電灯から照らされる円までの距離を「0（超至近距離）」に変更！
-    // 懐中電灯の画像自体のレンズの位置(右上)のすぐ目の前が照らされます。
-    const distance = 95; 
-    const angleRad = -28 * (Math.PI / 180); // 斜め右上約28度の方向へ照射
+    // 💡 距離を「ゼロ（超至近距離）」に詰める設計
+    // 絵文字ライトの先端（右上）のすぐ目の前がそのまま真ん丸く照らされます！
+    const distance = 45; 
+    const angleRad = -30 * (Math.PI / 180); // 斜め右上約30度の方向へ照射
 
     // 1. 照らされる「丸い光の中心点」の座標を計算
     const lightX = touchX + distance * Math.cos(angleRad);
     const lightY = touchY + distance * Math.sin(angleRad);
 
-    // 2. 懐中電灯の「物理的なレンズの先端（発光部）」の座標を計算
-    // 画像内のレンズ位置（右上部分）にぴったり合わせる補正値
-    const bulbX = touchX + 115;
-    const bulbY = touchY - 75;
+    // 2. 絵文字「🔦」のレンズ先端にピタッと合わせる発光部の座標
+    const bulbX = touchX + 45;
+    const bulbY = touchY - 45;
 
     // 3. CSS変数を書き換えて暗闇のくり抜き位置を連動
     darkOverlay.style.setProperty('--light-x', `${lightX}px`);
     darkOverlay.style.setProperty('--light-y', `${lightY}px`);
     darkOverlay.style.setProperty('--light-size', `${currentLightSize}px`);
 
-    // 4. 懐中電灯本体（画像）の位置を指の真下に固定
+    // 4. 懐中電灯本体（絵文字）の位置を指の真下に固定
     flashlightElement.style.left = `${touchX}px`;
     flashlightElement.style.top = `${touchY}px`;
 
-    // 5. 懐中電灯の先端から、照らされている丸い円のフチへ広がる「三角形の光の筋」の４点を計算
+    // 5. ライトの先端から、照らされている丸い円のフチへ広がる「三角形の光の筋」の４点を計算
     const spreadAngle = Math.PI / 2; // 光の広がり角度
     const beamEndX1 = lightX + currentLightSize * Math.cos(angleRad + spreadAngle);
     const beamEndY1 = lightY + currentLightSize * Math.sin(angleRad + spreadAngle);
@@ -304,7 +303,7 @@ function changeMode(mode) {
         tabKatakana.classList.add('active');
         boardContainer.classList.remove('hidden');
         kanjiContainer.classList.add('hidden');
-        createBoard(KATAGANA_CHARS);
+        createBoard(KATAKANA_CHARS);
     } else if (mode === 'kanji') {
         tabKanji.classList.add('active');
         boardContainer.className = 'hidden';
