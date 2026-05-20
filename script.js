@@ -17,14 +17,14 @@ const HIRAGANA_CHARS = [
 const KATAKANA_CHARS = [
     'ア', 'イ', 'ウ', 'エ', 'オ',
     'カ', 'キ', 'ク', 'ケ', 'コ',
-    'サ', 'シ', 'セ', 'ソ', 'タ',
-    'チ', 'ツ', 'テ', 'ト', 'ナ',
-    'ニ', 'ヌ', 'ネ', 'ノ', 'ハ',
-    'ひ', 'フ', 'ヘ', 'ホ', 'マ',
-    'ミ', 'ム', 'メ', 'モ', 'ヤ',
-    ' ', 'ユ', ' ', 'ヨ', 'ラ',
-    'り', 'る', 'れ', 'ろ', 'ワ',
-    ' ', 'ヲ', ' ', 'ン'
+    'サ', 'シ', 'ス', 'セ', 'ソ',
+    'タ', 'チ', 'ツ', 'テ', 'ト',
+    'ナ', 'ニ', 'ヌ', 'ネ', 'ノ',
+    'ハ', 'ひ', 'フ', 'ヘ', 'ホ',
+    'マ', 'ミ', 'ム', 'メ', 'モ',
+    'ヤ', ' ', 'ユ', ' ', 'ヨ',
+    'ラ', 'リ', 'ル', 'レ', 'ロ',
+    'ワ', ' ', 'ヲ', ' ', 'ン'
 ];
 
 // ===================================================
@@ -131,9 +131,8 @@ btnPlay.addEventListener('click', () => {
     btnReveal.classList.remove('hidden');
     btnBackToSetup.classList.add('hidden');
     
-    // ライトと光の筋を表示
+    // ライトを表示（【修正】不要になった光の筋 beamElement.style.display = 'block' を完全に削除しました）
     flashlightElement.style.display = 'block';
-    beamElement.style.display = 'block';
     
     // 初期位置を画面中央付近に設定
     const rect = gameArea.getBoundingClientRect();
@@ -148,7 +147,7 @@ btnReveal.addEventListener('click', () => {
     btnReveal.classList.add('hidden');
     btnBackToSetup.classList.remove('hidden');
     
-    // 正解発表されたらライトツールと光の筋を消す
+    // 正解発表されたらライトツールを消す
     flashlightElement.style.display = 'none';
     beamElement.style.display = 'none';
 });
@@ -182,12 +181,9 @@ function handleMove(e) {
 }
 
 function updateLightPosition(touchX, touchY) {
-    // 💡 距離を「懐中電灯とかぶらないギリギリ」に設計
     const angleRad = -30 * (Math.PI / 180); // 斜め右上約30度の方向へ照射
     
-    // 【大幅修正】指の位置（絵文字の中心）から、照らされる円の中心までの距離
-    // 「円の半径（currentLightSize）」に、絵文字の物理的な長さ(約60px)を加えた場所に円を配置することで、
-    // 懐中電灯の先端がちょうど円の左フチに触れ合います。
+    // 指の位置（絵文字の中心）から、照らされる円の中心までの距離
     const distance = currentLightSize + 60; 
 
     // 1. 照らされる「丸い光の中心点」の座標を計算
@@ -267,6 +263,7 @@ function switchPage(targetPage) {
     targetPage.classList.add('active');
 }
 
+// （以下、createBoard, changeMode, selectCharacter などの処理は変更なし）
 function createBoard(chars) {
     syuonBoard.innerHTML = '';
     chars.forEach(char => {
