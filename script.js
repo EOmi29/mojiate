@@ -6,7 +6,7 @@ const HIRAGANA_CHARS = [
     'か', 'き', 'く', 'け', 'こ',
     'さ', 'し', 'す', 'せ', 'そ',
     'た', 'ち', 'つ', 'て', 'と',
-    'な', 'に', 'ぬ', 'ね', 'ของ',
+    'な', 'に', 'ぬ', 'ね', 'の',
     'は', 'ひ', 'ふ', 'へ', 'ほ',
     'ま', 'み', 'む', 'め', 'も',
     'や', ' ', 'ゆ', ' ', 'よ',
@@ -20,7 +20,7 @@ const KATAKANA_CHARS = [
     'サ', 'シ', 'ス', 'セ', 'ソ',
     'タ', 'チ', 'ツ', 'テ', 'ト',
     'ナ', 'ニ', 'ヌ', 'ネ', 'ノ',
-    'ハ', 'ひ', 'フ', 'ヘ', 'ホ',
+    'ハ', 'ヒ', 'フ', 'ヘ', 'ホ',
     'マ', 'ミ', 'ム', 'メ', 'モ',
     'ヤ', ' ', 'ユ', ' ', 'ヨ',
     'ラ', 'リ', 'ル', 'レ', 'ロ',
@@ -32,7 +32,10 @@ const KATAKANA_CHARS = [
 // ===================================================
 let currentMode = 'hiragana';
 let selectedCharacter = '';
-let currentLightSize = 80; // 【改善】初期値を「ちいさい(80)」に変更
+
+// 【仕様変更】懐中電灯のサイズに応じた「くり抜く円の半径（ピクセル数）」
+// 文字の1/4以下しか映らないように、全体的にかなり小さめの絶妙なサイズに調整しました
+let currentLightSize = 35; 
 
 // ===================================================
 // HTML要素の取得
@@ -65,47 +68,16 @@ const darkOverlay = document.getElementById('dark-overlay');
 const sizeButtons = document.querySelectorAll('.btn-size');
 
 // ===================================================
-// 懐中電灯（ライト）エフェクトの準備
+// 懐中電灯（ライト）＆光の筋エレメントを動的に生成
 // ===================================================
 const flashlightElement = document.createElement('div');
 flashlightElement.id = 'flashlight-tool';
+flashlightElement.innerHTML = `<img src="light.png" id="flashlight-img" alt="懐中電灯">`;
 
-const style = document.createElement('style');
-style.innerHTML = `
-    #flashlight-tool {
-        position: absolute;
-        pointer-events: none;
-        z-index: 5;
-        transform: translate(-50%, -50%);
-        display: none;
-    }
-    #flashlight-tool::before {
-        content: '🔦';
-        font-size: 40px;
-        position: absolute;
-        top: -15px;
-        left: -15px;
-        transform: rotate(45deg);
-    }
-    #flashlight-tool::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: var(--glow-size, 200px);
-        height: var(--glow-size, 200px);
-        transform: translate(-50%, -50%);
-        background: radial-gradient(
-            circle, 
-            rgba(255, 255, 255, 0.4) 0%, 
-            rgba(255, 255, 255, 0.1) 40%, 
-            rgba(255, 255, 255, 0) 70%
-        );
-        border-radius: 50%;
-        pointer-events: none;
-    }
-`;
-document.head.appendChild(style);
+const beamElement = document.createElement('div');
+beamElement.id = 'flashlight-beam';
+
+gameArea.appendChild(beamElement);
 gameArea.appendChild(flashlightElement);
 
 // ===================================================
@@ -142,14 +114,14 @@ kanjiInput.addEventListener('input', () => {
     }
 });
 
-// 【改善】問題をだす！を押した時の初期化処理
+// 問題をだす！を押した時の初期化処理
 btnPlay.addEventListener('click', () => {
     hiddenText.textContent = selectedCharacter;
     
-    // ライトの大きさを一律「ちいさい」にリセット
-    currentLightSize = 80;
+    // 【仕様変更】デフォルトとして必ず「ちいさい（サイズ35）」を選択状態にする
+    currentLightSize = 35;
     sizeButtons.forEach(b => {
-        if(b.getAttribute('data-size') === '80') {
+        if(b.getAttribute('data-size') === '80') { // 互換性のためHTMLのdata属性はそのまま利用
             b.classList.add('active');
         } else {
             b.classList.remove('active');
@@ -159,29 +131,36 @@ btnPlay.addEventListener('click', () => {
     pageGame.classList.remove('revealed');
     btnReveal.classList.remove('hidden');
     btnBackToSetup.classList.add('hidden');
-    flashlightElement.style.display = 'block';
     
+    // ライトと光の筋を表示
+    flashlightElement.style.display = 'block';
+    beamElement.style.display = 'block';
+    
+    // 初期位置を画面中央付近に設定
     const rect = gameArea.getBoundingClientRect();
     updateLightPosition(rect.width / 2, rect.height / 2);
     
     switchPage(pageGame);
 });
 
-// 【改善】正解を見る！ボタンの挙動調整
+// 正解を見る！ボタンの挙動調整
 btnReveal.addEventListener('click', () => {
     pageGame.classList.add('revealed');
     btnReveal.classList.add('hidden');
     btnBackToSetup.classList.remove('hidden');
-    flashlightElement.style.display = 'none'; // ライトのマークを消す
+    
+    // 正解発表されたらライトツールと光の筋をパッと消す
+    flashlightElement.style.display = 'none';
+    beamElement.style.display = 'none';
 });
 
 btnBackToSetup.addEventListener('click', () => switchPage(pageSetup));
 
 // ===================================================
-// ライトの移動処理
+// 【大幅テコ入れ】ライトと放射状の光の計算・移動処理
 // ===================================================
 function handleMove(e) {
-    if (pageGame.classList.contains('revealed')) return; // 【改善】正解発表後はライト移動を止める
+    if (pageGame.classList.contains('revealed')) return; // 正解発表後は処理しない
 
     const rect = gameArea.getBoundingClientRect();
     let clientX, clientY;
@@ -194,6 +173,7 @@ function handleMove(e) {
         clientY = e.clientY;
     }
 
+    // 指やマウスの、ゲームエリア内における座標 (X, Y)
     const x = clientX - rect.left;
     const y = clientY - rect.top;
 
@@ -202,22 +182,55 @@ function handleMove(e) {
     }
 }
 
-function updateLightPosition(x, y) {
-    darkOverlay.style.setProperty('--light-x', `${x}px`);
-    darkOverlay.style.setProperty('--light-y', `${y}px`);
+function updateLightPosition(touchX, touchY) {
+    // 💡 指の位置からどのくらい離れた「右上」を照らすか（距離と角度の設計）
+    const distance = 280; // 持ち手から光の円までの距離（ピクセル）
+    const angleRad = -28 * (Math.PI / 180); // 斜め右上約28度の方向へ照射
+
+    // 1. 照らされる「丸い光の中心点」の座標を計算
+    const lightX = touchX + distance * Math.cos(angleRad);
+    const lightY = touchY + distance * Math.sin(angleRad);
+
+    // 2. 懐中電灯の「物理的なレンズの先端（発光部）」の座標を計算
+    // 画像内のレンズ位置（右上部分）に合わせるための補正値です
+    const bulbX = touchX + 115;
+    const bulbY = touchY - 75;
+
+    // 3. CSS変数（カスタムプロパティ）を書き換えて暗闇のくり抜き位置を連動
+    darkOverlay.style.setProperty('--light-x', `${lightX}px`);
+    darkOverlay.style.setProperty('--light-y', `${lightY}px`);
     darkOverlay.style.setProperty('--light-size', `${currentLightSize}px`);
 
-    flashlightElement.style.left = `${x}px`;
-    flashlightElement.style.top = `${y}px`;
-    flashlightElement.style.setProperty('--glow-size', `${currentLightSize * 2.5}px`);
+    // 4. 懐中電灯本体（画像）の位置を指の真下に固定
+    flashlightElement.style.left = `${touchX}px`;
+    flashlightElement.style.top = `${touchY}px`;
+
+    // 5. 懐中電灯の先端から、照らされている丸い円のフチへ広がる「三角形の光の筋」の４点を計算
+    // 円の半径（currentLightSize）に合わせて、光の広がり幅も自動で変化します
+    const spreadAngle = Math.PI / 2; // 光の広がり角度
+    const beamEndX1 = lightX + currentLightSize * Math.cos(angleRad + spreadAngle);
+    const beamEndY1 = lightY + currentLightSize * Math.sin(angleRad + spreadAngle);
+    const beamEndX2 = lightX + currentLightSize * Math.cos(angleRad - spreadAngle);
+    const beamEndY2 = lightY + currentLightSize * Math.sin(angleRad - spreadAngle);
+
+    // クリップパス用のポリゴン座標をCSS変数にセットして放射状の光を表現
+    beamElement.style.setProperty('--beam-start-x1', `${bulbX}px`);
+    beamElement.style.setProperty('--beam-start-y1', `${bulbY}px`);
+    beamElement.style.setProperty('--beam-start-x2', `${bulbX + 2}px`); // わずかな厚み
+    beamElement.style.setProperty('--beam-start-y2', `${bulbY - 2}px`);
+    beamElement.style.setProperty('--beam-end-x1', `${beamEndX1}px`);
+    beamElement.style.setProperty('--beam-end-y1', `${beamEndY1}px`);
+    beamElement.style.setProperty('--beam-end-x2', `${beamEndX2}px`);
+    beamElement.style.setProperty('--beam-end-y2', `${beamEndY2}px`);
 }
 
+// イベントのマウス・タッチへの紐付け
 gameArea.addEventListener('mousemove', handleMove);
 gameArea.addEventListener('touchstart', (e) => handleMove(e), { passive: true });
 gameArea.addEventListener('touchmove', handleMove, { passive: true });
 
 // ===================================================
-// ライトサイズ変更
+// ライトサイズ変更（切り替え時の半径のピクセル数指定）
 // ===================================================
 sizeButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -225,12 +238,22 @@ sizeButtons.forEach(btn => {
         const targetBtn = e.currentTarget;
         targetBtn.classList.add('active');
         
-        currentLightSize = parseInt(targetBtn.getAttribute('data-size'), 10);
+        // 選択されたボタンに応じて、くり抜く円のサイズを打ち変え
+        const rawSize = targetBtn.getAttribute('data-size');
+        if (rawSize === '80') {
+            currentLightSize = 35;  // ちいさい（文字のパーツがほんの一部見えるレベル）
+        } else if (rawSize === '150') {
+            currentLightSize = 65; // ふつう（文字の1/4程度が見えるレベル）
+        } else if (rawSize === '250') {
+            currentLightSize = 110; // おおきい
+        }
         
-        const x = darkOverlay.style.getPropertyValue('--light-x') || '0px';
-        const y = darkOverlay.style.getPropertyValue('--light-y') || '0px';
-        darkOverlay.style.setProperty('--light-size', `${currentLightSize}px`);
-        flashlightElement.style.setProperty('--glow-size', `${currentLightSize * 2.5}px`);
+        // 現在のマウス位置を取得して光のサイズを即座にリフレッシュ
+        const x = parseFloat(flashlightElement.style.left) || 0;
+        const y = parseFloat(flashlightElement.style.top) || 0;
+        if(x > 0 && y > 0) {
+            updateLightPosition(x, y);
+        }
     });
 });
 
