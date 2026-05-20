@@ -228,10 +228,10 @@ h2 {
 }
 
 /* ===================================================
-   4. ゲーム本番画面（リアルな懐中電灯と放射光）
+   4. ゲーム本番画面（修正：ライトの円を完全な白背景＆黒文字に）
    =================================================== */
 #page-game {
-    background-color: #050505; /* より深い闇へ */
+    background-color: #ffffff; /* ベースの地の色を「完全な白」に変更 */
     position: relative;
     touch-action: none;
 }
@@ -244,12 +244,11 @@ h2 {
     cursor: none; /* マウスを隠す */
 }
 
-/* 正解発表後は通常の矢印カーソルを戻す */
 #page-game.revealed #game-area {
     cursor: default;
 }
 
-/* 隠されている文字（超巨大サイズ） */
+/* 隠されている文字（ベースが白なので、文字色は真っ黒にします） */
 #hidden-text {
     position: absolute;
     top: 50%;
@@ -257,70 +256,72 @@ h2 {
     transform: translate(-50%, -50%);
     font-size: 75vh; 
     font-weight: 900;
-    color: #000000; /* プレイ中は完全に闇と同化 */
+    color: #000000; /* 常にクッキリとした真っ黒な文字 */
     user-select: none;
-    z-index: 1;
+    z-index: 1; /* 一番下に配置 */
 }
 
-/* 闇のオーバーレイ層（光を全方位に漏らさず、放射状の先端だけをくり抜く） */
+/* 闇のオーバーレイ層（光が当たった円の中だけを完全に透明化する） */
 #dark-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #0c0c0c;
+    background-color: #0c0c0c; /* 周囲を包む真っ黒な闇 */
     pointer-events: none;
-    z-index: 2;
+    z-index: 2; /* 文字の上に被せる */
     
-    /* JavaScriptから動的に操作される変数 */
-    --light-x: 0px;  /* 光の「円の中心」のX座標 */
-    --light-y: 0px;  /* 光の「円の中心」のY座標 */
-    --light-size: 40px; /* 【改善】文字の1/4以下しか映らないようにかなり小さめに設定 */
+    --light-x: 0px;
+    --light-y: 0px;
+    --light-size: 35px;
     
-    /* マスク機能で、懐中電灯の先の「丸い光の円」の部分だけを完全に透明にくり抜く */
+    /* マスクを改良：円の内側（0%〜90%）を「完全に透明（透過）」にくり抜き、外側を黒く残します */
     mask-image: radial-gradient(
         circle var(--light-size) at var(--light-x) var(--light-y),
         rgba(0,0,0,0) 0%, 
-        rgba(0,0,0,0) 85%, 
+        rgba(0,0,0,0) 90%, 
         rgba(0,0,0,1) 100%
     );
     -webkit-mask-image: radial-gradient(
         circle var(--light-size) at var(--light-x) var(--light-y),
         rgba(0,0,0,0) 0%, 
-        rgba(0,0,0,0) 85%, 
+        rgba(0,0,0,0) 90%, 
         rgba(0,0,0,1) 100%
     );
 }
 
-/* リアルな懐中電灯ツール本体（指・マウスの真下に持ち手が来る） */
+/* 懐中電灯ツール（指・マウスの真下に持ち手が来る） */
 #flashlight-tool {
     position: absolute;
     pointer-events: none;
-    z-index: 5;
+    z-index: 5; /* 最前面に表示 */
     display: none;
-    width: 150px;  /* 画像の表示サイズ */
-    height: 110px;
-    /* 懐中電灯の「持ち手の後ろ（左下）」を、指・マウスの座標の基準点にする設定 */
+    width: 160px;
+    height: 120px;
     transform: translate(-10%, -85%); 
+    
+    /* 【超重要】画像の周りにある「白い四角い余白」を黒い闇背景にブレンドして自動消去します */
+    mix-blend-mode: multiply; 
 }
 
-/* 懐中電灯の画像（light.png） */
+/* 懐中電灯の画像 */
 #flashlight-img {
     width: 100%;
     height: 100%;
     object-fit: contain;
 }
 
-/* 懐中電灯の先から、くり抜かれた円に向かって伸びる「黄色い放射状の光の筋」 */
+/* 懐中電灯の先から伸びる、リアルな黄色い放射光の筋 */
 #flashlight-beam {
     position: absolute;
     pointer-events: none;
-    z-index: 4;
+    z-index: 4; /* 暗闇レイヤーのさらに上に重ねる */
     display: none;
-    background: #fffae0; /* 共有いただいた画像に合わせた優しい黄色 */
     
-    /* ポリゴン（クリップパス）を使って、左下のライトの先端から、右上の円に向かって広がる三角形の光線を作ります */
+    /* 【改善】暗かった光の筋を、電球の温かみのある綺麗な黄色グラデーションに変更 */
+    background: linear-gradient(to top right, rgba(255, 240, 150, 0.4), rgba(255, 255, 200, 0.15));
+    
     clip-path: polygon(var(--beam-start-x1) var(--beam-start-y1), var(--beam-start-x2) var(--beam-start-y2), var(--beam-end-x2) var(--beam-end-y2), var(--beam-end-x1) var(--beam-end-y1));
     -webkit-clip-path: polygon(var(--beam-start-x1) var(--beam-start-y1), var(--beam-start-x2) var(--beam-start-y2), var(--beam-end-x2) var(--beam-end-y2), var(--beam-end-x1) var(--beam-end-y1));
     
@@ -328,10 +329,9 @@ h2 {
     height: 100%;
     top: 0;
     left: 0;
-    opacity: 0.25; /* 後ろの文字がはっきり見えるように、光の筋の透明度は薄めに調整 */
 }
 
-/* 正解発表された時の表示切り替え */
+/* 正解発表された時 */
 #page-game.revealed #dark-overlay {
     background-color: transparent;
     mask-image: none;
@@ -339,7 +339,7 @@ h2 {
 }
 
 #page-game.revealed {
-    background-color: #fbf7f0;
+    background-color: #fbf7f0; /* 全体をいつものミルク色に戻す */
 }
 
 #page-game.revealed #hidden-text {
