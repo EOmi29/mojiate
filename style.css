@@ -228,10 +228,10 @@ h2 {
 }
 
 /* ===================================================
-   4. ゲーム本番画面（真っ暗闇と白いライト）
+   4. ゲーム本番画面（リアルな懐中電灯と放射光）
    =================================================== */
 #page-game {
-    background-color: #111;
+    background-color: #050505; /* より深い闇へ */
     position: relative;
     touch-action: none;
 }
@@ -241,28 +241,28 @@ h2 {
     height: calc(100vh - 120px);
     position: relative;
     overflow: hidden;
-    cursor: none; /* プレイ中はカーソルを隠す */
+    cursor: none; /* マウスを隠す */
 }
 
-/* 正解発表されたら、通常の矢印カーソルを戻す */
+/* 正解発表後は通常の矢印カーソルを戻す */
 #page-game.revealed #game-area {
     cursor: default;
 }
 
-/* 【改善】隠されている文字を画面いっぱいに超巨大化 */
+/* 隠されている文字（超巨大サイズ） */
 #hidden-text {
     position: absolute;
     top: 50%;
     left: 45%;
     transform: translate(-50%, -50%);
-    font-size: 70vh; /* 45vhから70vhに大幅拡大！ */
+    font-size: 75vh; 
     font-weight: 900;
-    color: #000000; /* プレイ中は真っ黒 */
+    color: #000000; /* プレイ中は完全に闇と同化 */
     user-select: none;
-    z-index: 1; /* 暗闇の下に配置 */
+    z-index: 1;
 }
 
-/* 暗闇を覆うレイヤー */
+/* 闇のオーバーレイ層（光を全方位に漏らさず、放射状の先端だけをくり抜く） */
 #dark-overlay {
     position: absolute;
     top: 0;
@@ -271,35 +271,75 @@ h2 {
     height: 100%;
     background-color: #0c0c0c;
     pointer-events: none;
-    z-index: 2; /* 文字の上に暗闇を被せる */
+    z-index: 2;
     
-    --light-x: 0px;
-    --light-y: 0px;
-    --light-size: 80px;
+    /* JavaScriptから動的に操作される変数 */
+    --light-x: 0px;  /* 光の「円の中心」のX座標 */
+    --light-y: 0px;  /* 光の「円の中心」のY座標 */
+    --light-size: 40px; /* 【改善】文字の1/4以下しか映らないようにかなり小さめに設定 */
     
+    /* マスク機能で、懐中電灯の先の「丸い光の円」の部分だけを完全に透明にくり抜く */
     mask-image: radial-gradient(
         circle var(--light-size) at var(--light-x) var(--light-y),
         rgba(0,0,0,0) 0%, 
-        rgba(0,0,0,0) 80%, 
+        rgba(0,0,0,0) 85%, 
         rgba(0,0,0,1) 100%
     );
     -webkit-mask-image: radial-gradient(
         circle var(--light-size) at var(--light-x) var(--light-y),
         rgba(0,0,0,0) 0%, 
-        rgba(0,0,0,0) 80%, 
+        rgba(0,0,0,0) 85%, 
         rgba(0,0,0,1) 100%
     );
 }
 
-/* 【改善】正解を見た時、暗闇だけが消えて文字はちゃんと残る */
+/* リアルな懐中電灯ツール本体（指・マウスの真下に持ち手が来る） */
+#flashlight-tool {
+    position: absolute;
+    pointer-events: none;
+    z-index: 5;
+    display: none;
+    width: 150px;  /* 画像の表示サイズ */
+    height: 110px;
+    /* 懐中電灯の「持ち手の後ろ（左下）」を、指・マウスの座標の基準点にする設定 */
+    transform: translate(-10%, -85%); 
+}
+
+/* 懐中電灯の画像（light.png） */
+#flashlight-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* 懐中電灯の先から、くり抜かれた円に向かって伸びる「黄色い放射状の光の筋」 */
+#flashlight-beam {
+    position: absolute;
+    pointer-events: none;
+    z-index: 4;
+    display: none;
+    background: #fffae0; /* 共有いただいた画像に合わせた優しい黄色 */
+    
+    /* ポリゴン（クリップパス）を使って、左下のライトの先端から、右上の円に向かって広がる三角形の光線を作ります */
+    clip-path: polygon(var(--beam-start-x1) var(--beam-start-y1), var(--beam-start-x2) var(--beam-start-y2), var(--beam-end-x2) var(--beam-end-y2), var(--beam-end-x1) var(--beam-end-y1));
+    -webkit-clip-path: polygon(var(--beam-start-x1) var(--beam-start-y1), var(--beam-start-x2) var(--beam-start-y2), var(--beam-end-x2) var(--beam-end-y2), var(--beam-end-x1) var(--beam-end-y1));
+    
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0.25; /* 後ろの文字がはっきり見えるように、光の筋の透明度は薄めに調整 */
+}
+
+/* 正解発表された時の表示切り替え */
 #page-game.revealed #dark-overlay {
-    background-color: transparent; /* 完全に透明にして文字を見せる */
+    background-color: transparent;
     mask-image: none;
     -webkit-mask-image: none;
 }
 
 #page-game.revealed {
-    background-color: #fbf7f0; /* ゲーム画面全体の背景をミルク色に戻す */
+    background-color: #fbf7f0;
 }
 
 #page-game.revealed #hidden-text {
@@ -330,7 +370,6 @@ h2 {
     margin-bottom: 5px;
 }
 
-/* 正解発表されたらコントロールパネルの色味を背景に合わせる */
 #page-game.revealed #control-panel {
     background-color: rgba(0, 0, 0, 0.05);
     border: 1px solid rgba(0,0,0,0.1);
@@ -368,7 +407,6 @@ h2 {
     box-shadow: 0 0 15px rgba(255,255,255,0.6);
 }
 
-/* 正解発表後のサイズボタンの見た目 */
 #page-game.revealed .btn-size {
     color: #4a3b32;
     background-color: rgba(255, 255, 255, 0.8);
