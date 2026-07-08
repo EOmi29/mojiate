@@ -231,7 +231,7 @@ h2 {
     transform: translate(-50%, -50%);
     font-size: 70vh; 
     font-weight: bold;
-    color: #000000;    
+    color: #3a2010;    /* ★黒(#000000)から視認性の高い濃いブラウンに変更！白・黒どちらとも区別がつきます */
     user-select: none;
     z-index: 1; 
 }
@@ -271,7 +271,7 @@ h2 {
     pointer-events: none;
     z-index: 3; 
     display: none;
-    width: 120px;  /* 余白が消えたため、少し小さく扱いやすいサイズに調整 */
+    width: 120px;  
     height: 120px;
     /* トリミング後の画像の「右上（レンズ）」が指の斜め上をきれいに狙うための位置調整 */
     transform: translate(-20%, -60%); 
@@ -281,6 +281,29 @@ h2 {
     width: 100%;
     height: 100%;
     object-fit: contain;
+}
+
+/* ★新規追加：最上層の白い4分割枠線マス（暗闇でも常に見えるガイド） */
+#guide-grid {
+    position: absolute;
+    top: 48%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+    width: 75vh;
+    height: 75vh;
+    
+    /* 外枠：白い実線（少しだけ馴染むよう不透明度80%の白にしています） */
+    border: 3px solid rgba(255, 255, 255, 0.8);
+    
+    /* 背景は透明にしつつ、CSSで「十字の点線（白）」を描画 */
+    background: 
+        linear-gradient(to right, transparent 49%, rgba(255,255,255,0.8) 49%, rgba(255,255,255,0.8) 51%, transparent 51%) repeat-x,
+        linear-gradient(to bottom, transparent 49%, rgba(255,255,255,0.8) 49%, rgba(255,255,255,0.8) 51%, transparent 51%) repeat-y;
+    background-size: 100% 16px, 16px 100%; /* これで綺麗な点線になります */
+    
+    /* マウスやタッチの操作を邪魔しない（すり抜ける）設定 */
+    pointer-events: none; 
+    z-index: 4; /* 懐中電灯や暗闇よりも上に重ねる */
 }
 
 /* 正解発表された時 */
@@ -295,7 +318,16 @@ h2 {
 }
 
 #page-game.revealed #hidden-text {
-    color: #4a3b32; 
+    color: #4a3b32; /* 正解後は元の優しいチョコレート色に */
+}
+
+/* 正解発表された時のマスのデザイン変更（ノート風の薄いブラウンの点線に切り替え） */
+#page-game.revealed #guide-grid {
+    border-color: rgba(74, 59, 50, 0.25);
+    background: 
+        linear-gradient(to right, transparent 49%, rgba(74, 59, 50, 0.25) 49%, rgba(74, 59, 50, 0.25) 51%, transparent 51%) repeat-x,
+        linear-gradient(to bottom, transparent 49%, rgba(74, 59, 50, 0.25) 49%, rgba(74, 59, 50, 0.25) 51%, transparent 51%) repeat-y;
+    background-size: 100% 16px, 16px 100%;
 }
 
 /* 右側のコントロールパネル */
