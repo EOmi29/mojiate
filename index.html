@@ -62,7 +62,7 @@
     </div>
 
     <!-- ===================================================
-         3. ゲーム本番画面
+         3. ゲーム本番画面（コントロールパネル集約・全画面フィット版）
          =================================================== -->
     <div id="page-game" class="page">
         <!-- メインの暗闇・ゲームエリア -->
@@ -71,28 +71,29 @@
             <div id="hidden-text">あ</div>
             <!-- 暗闇とライトを表現するオーバーレイ層 -->
             <div id="dark-overlay"></div>
-            <!-- ★追加：最上層に配置する4分割の枠線マス -->
+            <!-- 最上層に配置する4分割の枠線マス -->
             <div id="guide-grid"></div>
-        </div>
 
-        <!-- 右側のコントロールパネル（ライトサイズ変更） -->
-        <div id="control-panel">
-            <h3>ライトの大きさ</h3>
-            <button id="btn-size-small" class="btn-size" data-size="80">
-                <span class="icon">・</span>ちいさい
-            </button>
-            <button id="btn-size-medium" class="btn-size active" data-size="150">
-                <span class="icon">●</span>ふつう
-            </button>
-            <button id="btn-size-large" class="btn-size" data-size="250">
-                <span class="icon">■</span>おおきい
-            </button>
-        </div>
+            <!-- 右側のコントロールパネル（ライトサイズ変更 ＆ 操作ボタンを集約） -->
+            <div id="control-panel">
+                <h3>ライトの大きさ</h3>
+                <button id="btn-size-small" class="btn-size" data-size="80">
+                    <span class="icon">・</span>ちいさい
+                </button>
+                <button id="btn-size-medium" class="btn-size active" data-size="150">
+                    <span class="icon">●</span>ふつう
+                </button>
+                <button id="btn-size-large" class="btn-size" data-size="250">
+                    <span class="icon">■</span>おおきい
+                </button>
 
-        <!-- 下部の正解確認・ナビゲーションエリア -->
-        <div id="game-footer">
-            <button id="btn-reveal" class="btn btn-reveal">せいかいをみる！</button>
-            <button id="btn-back-to-setup" class="btn btn-secondary hidden">もういちど遊ぶ（出題へ）</button>
+                <!-- 区切り線 -->
+                <div class="panel-divider"></div>
+
+                <!-- 下部フッターから引っ越してきたアクションボタン群 -->
+                <button id="btn-reveal" class="btn btn-reveal">せいかいをみる！</button>
+                <button id="btn-back-to-setup" class="btn btn-secondary hidden">もういちど遊ぶ</button>
+            </div>
         </div>
     </div>
 
