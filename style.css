@@ -226,12 +226,14 @@ h2 {
 /* 隠されている大きな文字（最下層） */
 #hidden-text {
     position: absolute;
-    top: 48%; 
-    left: 45%;
+    /* ★文字の位置を枠線の中心（50%, 50%）にピッタリ合わせるよう修正 */
+    top: 50%; 
+    left: 50%;
     transform: translate(-50%, -50%);
     font-size: 70vh; 
     font-weight: bold;
-    color: #3a2010;    /* ★黒(#000000)から視認性の高い濃いブラウンに変更！白・黒どちらとも区別がつきます */
+    line-height: 1; /* ★上下の余白をなくして中央に配置しやすくする */
+    color: #3a2010; /* 白・黒どちらとも区別がつく濃いブラウン */
     user-select: none;
     z-index: 1; 
 }
@@ -273,7 +275,6 @@ h2 {
     display: none;
     width: 120px;  
     height: 120px;
-    /* トリミング後の画像の「右上（レンズ）」が指の斜め上をきれいに狙うための位置調整 */
     transform: translate(-20%, -60%); 
 }
 
@@ -283,27 +284,48 @@ h2 {
     object-fit: contain;
 }
 
-/* ★新規追加：最上層の白い4分割枠線マス（暗闇でも常に見えるガイド） */
+/* ★大幅改良：最上層の白い4分割枠線マス（十字破線対応版） */
 #guide-grid {
     position: absolute;
-    top: 48%;
-    left: 45%;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
     width: 75vh;
     height: 75vh;
+    background: transparent;
     
-    /* 外枠：白い実線（少しだけ馴染むよう不透明度80%の白にしています） */
+    /* 外枠：白い実線（太さ3px） */
     border: 3px solid rgba(255, 255, 255, 0.8);
-    
-    /* 背景は透明にしつつ、CSSで「十字の点線（白）」を描画 */
-    background: 
-        linear-gradient(to right, transparent 49%, rgba(255,255,255,0.8) 49%, rgba(255,255,255,0.8) 51%, transparent 51%) repeat-x,
-        linear-gradient(to bottom, transparent 49%, rgba(255,255,255,0.8) 49%, rgba(255,255,255,0.8) 51%, transparent 51%) repeat-y;
-    background-size: 100% 16px, 16px 100%; /* これで綺麗な点線になります */
-    
-    /* マウスやタッチの操作を邪魔しない（すり抜ける）設定 */
     pointer-events: none; 
-    z-index: 4; /* 懐中電灯や暗闇よりも上に重ねる */
+    z-index: 4; 
+}
+
+/* ★新規追加：外枠の中に確実な十字の破線を作るための設定 */
+#guide-grid::before,
+#guide-grid::after {
+    content: "";
+    position: absolute;
+    background: transparent;
+}
+
+/* 縦の破線 */
+#guide-grid::before {
+    top: 0;
+    left: 50%;
+    width: 0;
+    height: 100%;
+    transform: translateX(-50%);
+    border-left: 3px dashed rgba(255, 255, 255, 0.8); /* 外枠と同じ太さの破線 */
+}
+
+/* 横の破線 */
+#guide-grid::after {
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 0;
+    transform: translateY(-50%);
+    border-top: 3px dashed rgba(255, 255, 255, 0.8); /* 外枠と同じ太さの破線 */
 }
 
 /* 正解発表された時 */
@@ -321,13 +343,15 @@ h2 {
     color: #4a3b32; /* 正解後は元の優しいチョコレート色に */
 }
 
-/* 正解発表された時のマスのデザイン変更（ノート風の薄いブラウンの点線に切り替え） */
+/* 正解発表された時のマスのデザイン変更（ノート風の薄いブラウンの破線に切り替え） */
 #page-game.revealed #guide-grid {
     border-color: rgba(74, 59, 50, 0.25);
-    background: 
-        linear-gradient(to right, transparent 49%, rgba(74, 59, 50, 0.25) 49%, rgba(74, 59, 50, 0.25) 51%, transparent 51%) repeat-x,
-        linear-gradient(to bottom, transparent 49%, rgba(74, 59, 50, 0.25) 49%, rgba(74, 59, 50, 0.25) 51%, transparent 51%) repeat-y;
-    background-size: 100% 16px, 16px 100%;
+}
+#page-game.revealed #guide-grid::before {
+    border-left: 3px dashed rgba(74, 59, 50, 0.25);
+}
+#page-game.revealed #guide-grid::after {
+    border-top: 3px dashed rgba(74, 59, 50, 0.25);
 }
 
 /* 右側のコントロールパネル */
