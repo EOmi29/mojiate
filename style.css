@@ -231,7 +231,7 @@ h2 {
     position: absolute;
     top: 50%; 
     left: 50%;
-    transform: translate(-50%, -42%); /* 上寄り対策補正済 */
+    transform: translate(-50%, -50%); /* 上寄り対策補正済 */
     font-size: 70vh; 
     font-weight: bold;
     line-height: 1; 
