@@ -229,7 +229,7 @@ h2 {
     /* ★文字の位置を枠線の中心（50%, 50%）にピッタリ合わせるよう修正 */
     top: 50%; 
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -42%);
     font-size: 70vh; 
     font-weight: bold;
     line-height: 1; /* ★上下の余白をなくして中央に配置しやすくする */
