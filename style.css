@@ -467,3 +467,87 @@ h2 {
 }
 
 /* 元の不要になった下部フッターコードは安全のため削除 */
+
+/* ===================================================
+   追加：アルファベット用のスタイル ＆ 4本線ガイド
+   =================================================== */
+
+/* アルファベット用のグリッド（7列） */
+.alphabet-grid {
+    grid-template-columns: repeat(7, 1fr);
+    max-width: 550px;
+    margin: 0 auto;
+}
+
+.alphabet-section {
+    margin-bottom: 25px;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.alphabet-section h3 {
+    font-size: 1.2rem;
+    color: #4a3b32;
+    margin-bottom: 15px;
+}
+
+/* アルファベットモード時のガイドライン（4本線） */
+#guide-grid.alphabet-mode {
+    border: none;
+    width: 90vw;
+    height: 70vh; /* 文字サイズに合わせて枠を調整 */
+}
+
+/* 十字の破線を消す */
+#guide-grid.alphabet-mode::before,
+#guide-grid.alphabet-mode::after {
+    display: none;
+}
+
+/* 4本線の共通設定 */
+.alpha-line {
+    display: none;
+    position: absolute;
+    left: 0;
+    width: 100%;
+}
+
+#guide-grid.alphabet-mode .alpha-line {
+    display: block;
+}
+
+/* 4本線の位置（欧文フォントのバランスに合わせています） */
+#guide-grid.alphabet-mode .line-1 {
+    top: 20%; 
+    border-top: 3px solid rgba(255, 255, 255, 0.8);
+}
+#guide-grid.alphabet-mode .line-2 {
+    top: 45%; /* ミーンライン（小文字の上限） */
+    border-top: 3px dashed rgba(255, 255, 255, 0.8);
+}
+#guide-grid.alphabet-mode .line-3 {
+    top: 73%; /* ベースライン（文字の基準線） */
+    border-top: 3px solid rgba(255, 100, 100, 0.8); /* 赤色にして強調 */
+}
+#guide-grid.alphabet-mode .line-4 {
+    top: 93%; /* ディセンダライン（gやyがはみ出す線） */
+    border-top: 3px solid rgba(255, 255, 255, 0.8);
+}
+
+/* 正解発表された時（ノート風の色に変化） */
+#page-game.revealed #guide-grid.alphabet-mode .line-1,
+#page-game.revealed #guide-grid.alphabet-mode .line-2,
+#page-game.revealed #guide-grid.alphabet-mode .line-4 {
+    border-top-color: rgba(74, 59, 50, 0.25);
+}
+#page-game.revealed #guide-grid.alphabet-mode .line-3 {
+    border-top-color: rgba(255, 100, 100, 0.5);
+}
+
+/* アルファベットモード用のフォント（丸ゴシックだと位置がズレやすいため欧文フォント優先） */
+#hidden-text.alphabet-mode {
+    font-family: 'Century Gothic', 'Comic Sans MS', Arial, sans-serif;
+    font-size: 65vh; /* 4本線とピッタリ合うように少しだけ縮小 */
+}
