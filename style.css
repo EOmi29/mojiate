@@ -1,0 +1,562 @@
+/* ===================================================
+   共通の基本スタイル＆丸ゴシック・教育向けデザイン
+   =================================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /* iPadの丸ゴ、Windowsのメイリオ、Googleフォントの順で、どれかが必ず適用されるように指定 */
+    font-family: 'Hiragino Maru Gothic ProN', 'ヒラギノ丸ゴ ProN', 'Meiryo', 'メイリオ', 'Klee', 'Klee One', sans-serif;
+}
+
+body {
+    background-color: #fbf7f0; /* 温かみのあるミルク色 */
+    color: #4a3b32;           /* 優しいチョコレート色の文字 */
+    overflow-x: hidden;
+}
+
+/* ページ全体の切り替え管理 */
+.page {
+    display: none;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.page.active {
+    display: block;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: #ff6f61;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 0px #fff, 4px 4px 0px #ffcca7;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 1.8rem;
+    color: #4a3b32;
+    margin-bottom: 25px;
+    font-weight: bold;
+}
+
+.description {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    margin-bottom: 40px;
+}
+
+/* ===================================================
+   ボタン・タブの基本スタイル
+   =================================================== */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.1);
+    transition: all 0.1s ease;
+    text-decoration: none;
+}
+
+.btn:active:not(:disabled) {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+}
+
+.btn:disabled {
+    background-color: #ccc !important;
+    color: #888 !important;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-primary { background-color: #ffaa33; color: white; }
+.btn-secondary { background-color: #4bc0c0; color: white; }
+.btn-success { background-color: #99cc33; color: white; }
+.btn-text { background-color: transparent; color: #8a7365; box-shadow: none; }
+
+.btn-large {
+    font-size: 1.5rem;
+    padding: 16px 40px;
+    border-radius: 20px;
+}
+
+.tab-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: 2px solid #e6d7cb;
+    background-color: #fff;
+    color: #8a7365;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.tab-btn.active {
+    background-color: #ff6f61;
+    color: white;
+    border-color: #ff6f61;
+}
+
+/* ===================================================
+   出題設定画面のスタイル
+   =================================================== */
+.grid-board {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    max-width: 450px;
+    margin: 0 auto 20px auto;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.char-btn {
+    aspect-ratio: 1;
+    font-size: 1.4rem;
+    font-weight: bold;
+    background-color: #f7f1eb;
+    color: #4a3b32;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.char-btn:hover {
+    background-color: #ffeae6;
+}
+
+.char-btn.selected {
+    background-color: #ff6f61;
+    color: white;
+    transform: scale(1.05);
+}
+
+.char-btn.empty {
+    visibility: hidden;
+}
+
+#kanji-container {
+    background-color: #fff;
+    max-width: 450px;
+    margin: 0 auto 30px auto;
+    padding: 30px 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+#kanji-input {
+    width: 80px;
+    height: 80px;
+    font-size: 2.5rem;
+    text-align: center;
+    border: 3px solid #ffaa33;
+    border-radius: 15px;
+    color: #4a3b32;
+    font-weight: bold;
+}
+
+.error-text {
+    color: #ff4d4d;
+    font-weight: bold;
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+.selected-display {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+#current-selected-text {
+    color: #ff6f61;
+    font-size: 1.6rem;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ===================================================
+   3. ゲーム本番画面（スクロール完全禁止・全画面フィット対応版）
+   =================================================== */
+#page-game {
+    background-color: #ffffff; 
+    position: relative;
+    touch-action: none;
+    overflow: hidden; /* 画面全体のスクロールを完全に禁止 */
+    height: 100vh;    /* 画面の高さにピッタリ合わせる */
+    width: 100vw;
+}
+
+#game-area {
+    width: 100vw;
+    height: 100vh;    /* 黒い下部フッターが消えたため、エリアを全画面化 */
+    position: relative;
+    overflow: hidden;
+    cursor: none; 
+}
+
+#page-game.revealed #game-area {
+    cursor: default;
+}
+
+/* 隠されている大きな文字（最下層） */
+#hidden-text {
+    position: absolute;
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%); /* 上寄り対策補正済 */
+    font-size: 70vh; 
+    font-weight: bold;
+    line-height: 1; 
+    color: #3a2010; /* 白・黒どちらとも区別がつく濃いブラウン */
+    user-select: none;
+    z-index: 1; 
+}
+
+/* 闇のオーバーレイ層（文字の上） */
+#dark-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0c0c0c; /* 真っ黒な闇 */
+    pointer-events: none;
+    z-index: 2; 
+    
+    --light-x: 0px;
+    --light-y: 0px;
+    --light-size: 35px;
+    
+    mask-image: radial-gradient(
+        circle var(--light-size) at var(--light-x) var(--light-y),
+        rgba(0,0,0,0) 0%, 
+        rgba(0,0,0,0) 85%, 
+        rgba(0,0,0,1) 100%
+    );
+    -webkit-mask-image: radial-gradient(
+        circle var(--light-size) at var(--light-x) var(--light-y),
+        rgba(0,0,0,0) 0%, 
+        rgba(0,0,0,0) 85%, 
+        rgba(0,0,0,1) 100%
+    );
+}
+
+/* 懐中電灯画像 */
+#flashlight-tool {
+    position: absolute;
+    pointer-events: none;
+    z-index: 3; 
+    display: none;
+    width: 120px;  
+    height: 120px;
+    transform: translate(-20%, -60%); 
+}
+
+#flashlight-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* 4分割枠線マス（十字破線対応版） */
+#guide-grid {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 75vh;
+    height: 75vh;
+    background: transparent;
+    border: 3px solid rgba(255, 255, 255, 0.8);
+    pointer-events: none; 
+    z-index: 4; 
+}
+
+/* 十字の破線を作るための設定 */
+#guide-grid::before,
+#guide-grid::after {
+    content: "";
+    position: absolute;
+    background: transparent;
+}
+
+/* 縦の破線 */
+#guide-grid::before {
+    top: 0;
+    left: 50%;
+    width: 0;
+    height: 100%;
+    transform: translateX(-50%);
+    border-left: 3px dashed rgba(255, 255, 255, 0.8);
+}
+
+/* 横の破線 */
+#guide-grid::after {
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 0;
+    transform: translateY(-50%);
+    border-top: 3px dashed rgba(255, 255, 255, 0.8);
+}
+
+/* 正解発表された時 */
+#page-game.revealed #dark-overlay {
+    background-color: transparent;
+    mask-image: none;
+    -webkit-mask-image: none;
+}
+
+#page-game.revealed {
+    background-color: #fbf7f0; 
+}
+
+#page-game.revealed #hidden-text {
+    color: #4a3b32; 
+}
+
+/* ノート風の薄いブラウンの破線に切り替え */
+#page-game.revealed #guide-grid {
+    border-color: rgba(74, 59, 50, 0.25);
+}
+#page-game.revealed #guide-grid::before {
+    border-left: 3px dashed rgba(74, 59, 50, 0.25);
+}
+#page-game.revealed #guide-grid::after {
+    border-top: 3px dashed rgba(74, 59, 50, 0.25);
+}
+
+/* ===================================================
+   右側のコントロールパネル（ボタン引っ越し・調整版）
+   =================================================== */
+#control-panel {
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    padding: 22px 18px;
+    border-radius: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border: 1px solid rgba(255,255,255,0.2);
+    z-index: 10;
+    width: 170px; /* パネル全体の横幅を均一に固定 */
+}
+
+#control-panel h3 {
+    color: #fff;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+#page-game.revealed #control-panel {
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0,0,0,0.1);
+}
+#page-game.revealed #control-panel h3 {
+    color: #4a3b32;
+}
+
+/* ライト切り替えボタンの共通設定 */
+.btn-size {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: .2s;
+}
+
+.btn-size .icon {
+    font-size: 1rem;
+    display: inline-block;
+}
+
+.btn-size.active {
+    background-color: #fff;
+    color: #111;
+    border-color: #fff;
+    box-shadow: 0 0 12px rgba(255,255,255,0.5);
+}
+
+#page-game.revealed .btn-size {
+    color: #4a3b32;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 2px solid #e6d7cb;
+}
+#page-game.revealed .btn-size.active {
+    background-color: #ffaa33; /* 正解後はオレンジに */
+    color: white;
+    border-color: #ffaa33;
+    box-shadow: none;
+}
+
+/* パネル内の区切り線 */
+.panel-divider {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.2);
+    margin: 8px 0;
+}
+#page-game.revealed .panel-divider {
+    background-color: rgba(74, 59, 50, 0.15);
+}
+
+/* 引っ越してきたアクションボタンの調整 */
+.btn-reveal, 
+#control-panel .btn-secondary {
+    width: 100%;
+    padding: 14px 10px;
+    font-size: 1rem;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.15);
+}
+
+.btn-reveal {
+    background-color: #ff6f61;
+    color: white;
+}
+.btn-reveal:hover {
+    background-color: #ff857a;
+}
+
+#control-panel .btn-secondary {
+    background-color: #4bc0c0;
+    color: white;
+}
+
+/* 元の不要になった下部フッターコードは安全のため削除 */
+
+/* ===================================================
+   追加：アルファベット用のスタイル ＆ 4本線ガイド
+   =================================================== */
+
+/* アルファベット用のグリッド（7列） */
+.alphabet-grid {
+    grid-template-columns: repeat(7, 1fr);
+    max-width: 550px;
+    margin: 0 auto;
+}
+
+.alphabet-section {
+    margin-bottom: 25px;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.alphabet-section h3 {
+    font-size: 1.2rem;
+    color: #4a3b32;
+    margin-bottom: 15px;
+}
+
+/* 旧・4本線divは使用しない（SVG版に置き換えたため常に非表示） */
+.alpha-line {
+    display: none;
+}
+
+/* -----------------------------------------------------------
+   アルファベット用：文字と罫線を「同じSVG座標系」で管理する方式
+   viewBox="0 0 1000 700" を共通の物差しとして使うことで、
+   罫線(#alphabet-guide-svg)と文字(#alphabet-text-svg)が
+   ズレることなく、A〜Z・a〜z すべてで自動的に位置が合う。
+   ----------------------------------------------------------- */
+.alpha-svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90vw;
+    height: 75vh;
+    overflow: visible;
+}
+
+/* 文字側SVG：暗闇の下（z-index 1相当）に表示 */
+#alphabet-text-svg {
+    z-index: 1;
+}
+
+#alphabet-hidden-text {
+    font-family: 'Century Gothic', 'Comic Sans MS', Arial, sans-serif;
+    font-weight: bold;
+    font-size: 530px; /* viewBox内の単位。line-1〜line-3の間隔に合わせた大文字の高さ */
+    fill: #3a2010;
+    dominant-baseline: alphabetic; /* ← これにより文字のベースラインが常にy=511(line-3)に一致する */
+}
+
+#page-game.revealed #alphabet-hidden-text {
+    fill: #4a3b32;
+}
+
+/* 罫線側SVG：暗闇より上（z-index 4相当）に表示 */
+#alphabet-guide-svg {
+    z-index: 4;
+    pointer-events: none;
+}
+
+.a-line {
+    stroke-width: 3;
+    vector-effect: non-scaling-stroke;
+}
+.a-line.thin {
+    stroke: rgba(255, 255, 255, 0.8);
+}
+.a-line.dashed {
+    stroke: rgba(255, 255, 255, 0.8);
+    stroke-dasharray: 14 10;
+}
+.a-line.base {
+    stroke: rgba(255, 100, 100, 0.8); /* ベースラインは赤で強調 */
+}
+
+/* 正解発表された時（ノート風の色に変化） */
+#page-game.revealed .a-line.thin,
+#page-game.revealed .a-line.dashed {
+    stroke: rgba(74, 59, 50, 0.25);
+}
+#page-game.revealed .a-line.base {
+    stroke: rgba(255, 100, 100, 0.5);
+}
