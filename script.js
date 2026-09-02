@@ -142,7 +142,7 @@ kanjiInput.addEventListener('input', () => {
 btnPlay.addEventListener('click', () => {
     hiddenText.textContent = selectedCharacter;
     
-    // アルファベットモードの場合は、4本線と専用フォントに切り替え
+    // 【1】アルファベットモードの場合は、4本線と専用フォントに切り替え
     if (currentMode === 'alphabet') {
         hiddenText.classList.add('alphabet-mode');
         guideGrid.classList.add('alphabet-mode');
@@ -150,7 +150,19 @@ btnPlay.addEventListener('click', () => {
         hiddenText.classList.remove('alphabet-mode');
         guideGrid.classList.remove('alphabet-mode');
     }
+
+    // 【2】下に突き抜ける（ディセンダーを持つ）小文字の判定
+    const descenderChars = ['g', 'j', 'p', 'q', 'y'];
     
+    if (descenderChars.includes(selectedCharacter)) {
+        // g, j, p, q, y の場合は特別なクラスをつける
+        hiddenText.classList.add('has-descender');
+    } else {
+        // それ以外の文字は外す
+        hiddenText.classList.remove('has-descender');
+    }
+    
+    // 【3】ライトの初期化処理
     currentLightSize = 35;
     sizeButtons.forEach(b => {
         if(b.getAttribute('data-size') === '80') b.classList.add('active');
@@ -167,7 +179,6 @@ btnPlay.addEventListener('click', () => {
     
     switchPage(pageGame);
 });
-
 btnReveal.addEventListener('click', () => {
     pageGame.classList.add('revealed');
     btnReveal.classList.add('hidden');
