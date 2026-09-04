@@ -531,6 +531,19 @@ h2 {
     fill: #4a3b32;
 }
 
+/* 読み方（カタカナ）：答え合わせボタンを押すまでは非表示 */
+#alphabet-reading-text {
+    font-family: 'Hiragino Maru Gothic ProN', 'ヒラギノ丸ゴ ProN', 'Meiryo', 'メイリオ', sans-serif;
+    font-weight: bold;
+    font-size: 90px;
+    fill: #ff6f61;
+    visibility: hidden;
+}
+
+#page-game.revealed #alphabet-reading-text {
+    visibility: visible;
+}
+
 /* 罫線側SVG：暗闇より上（z-index 4相当）に表示 */
 #alphabet-guide-svg {
     z-index: 4;

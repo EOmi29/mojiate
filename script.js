@@ -42,6 +42,16 @@ const ALPHABET_LOWER_CHARS = [
     'v', 'w', 'x', 'y', 'z', ' ', ' '
 ];
 
+// 追加：アルファベットの読み方（カタカナ）。大文字・小文字どちらでも同じ読みを引けるようにする
+const ALPHABET_READINGS = {
+    A: 'エー', B: 'ビー', C: 'シー', D: 'ディー', E: 'イー',
+    F: 'エフ', G: 'ジー', H: 'エイチ', I: 'アイ', J: 'ジェー',
+    K: 'ケー', L: 'エル', M: 'エム', N: 'エヌ', O: 'オー',
+    P: 'ピー', Q: 'キュー', R: 'アール', S: 'エス', T: 'ティー',
+    U: 'ユー', V: 'ブイ', W: 'ダブリュー', X: 'エックス', Y: 'ワイ',
+    Z: 'ゼット'
+};
+
 // ===================================================
 // 状態管理変数
 // ===================================================
@@ -91,6 +101,7 @@ const sizeButtons = document.querySelectorAll('.btn-size');
 // 追加：アルファベット専用SVG（文字・罫線を同じ座標系で管理）
 const alphabetTextSvg = document.getElementById('alphabet-text-svg');
 const alphabetHiddenText = document.getElementById('alphabet-hidden-text');
+const alphabetReadingText = document.getElementById('alphabet-reading-text');
 const alphabetGuideSvg = document.getElementById('alphabet-guide-svg');
 
 // ===================================================
@@ -149,6 +160,7 @@ btnPlay.addEventListener('click', () => {
     if (currentMode === 'alphabet') {
         // SVG側（文字＋ベースライン基準の罫線）を表示
         alphabetHiddenText.textContent = selectedCharacter;
+        alphabetReadingText.textContent = ALPHABET_READINGS[selectedCharacter.toUpperCase()] || '';
         alphabetTextSvg.classList.remove('hidden');
         alphabetGuideSvg.classList.remove('hidden');
         // 通常のひらがな等の表示は隠す
